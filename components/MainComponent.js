@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Constants from 'expo-constants';
-import { View, Platform } from 'react-native';
+import { View, Platform, StyleSheet } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
@@ -13,7 +14,17 @@ import ExpoStatusBar from 'expo-status-bar/build/ExpoStatusBar';
 
 const DirectoryNavigator = createStackNavigator(
     {
-        Directory: { screen: Directory },
+        Directory: {
+            screen: Directory,
+            navigationOptions: ({ navigation }) => ({
+                headerLeft: <Icon
+                    name='list'
+                    type='font-awesome'
+                    iconStyle={style.stackIcon}
+                    onPress={() => navigation.toggleDrawer()}
+                />
+            })
+        },
         CampsiteInfo: { screen: CampsiteInfo }
     },
     {
