@@ -1,6 +1,5 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
-import { promotions } from './promotions';
 
 export const fetchComments = () => dispatch => {
     return fetch(baseUrl + 'comments')
@@ -50,9 +49,9 @@ export const fetchCampsites = () => dispatch => {
                 const errMess = new Error(error.message);
                 throw errMess;
             })
-        .then(resonse => response.json())
+        .then(response => response.json())
         .then(campsites => dispatch(addCampsites(campsites)))
-        .catch(error => dispatch(campsitesFailed(error.message)))
+        .catch(error => dispatch(campsitesFailed(error.message)));
 };
 
 export const campsitesLoading = () => ({
@@ -96,12 +95,12 @@ export const promotionsLoading = () => ({
     type: ActionTypes.PROMOTIONS_LOADING
 });
 
-export const promotionsFailed = () => ({
+export const promotionsFailed = errMess => ({
     type: ActionTypes.PROMOTIONS_FAILED,
     payload: errMess
 });
 
-export const addPromotions = () => ({
+export const addPromotions = promotions => ({
     type: ActionTypes.ADD_PROMOTIONS,
     payload: promotions
 });
