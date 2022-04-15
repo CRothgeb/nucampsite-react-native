@@ -79,7 +79,7 @@ const AboutNavigator = createStackNavigator(
         About: { screen: About }
     },
     {
-        navigationOptions: ({ navigation }) => ({
+        defaultNavigationOptions: ({ navigation }) => ({
             headerStyle: {
                 backgroundColor: '#5637DD'
             },
