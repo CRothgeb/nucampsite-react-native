@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Button, StyleSheet } from 'react-native';
-import { Input, Checkbox } from 'react-native-elements';
+import { Input, CheckBox } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 
 class Login extends Component {
@@ -26,7 +26,7 @@ class Login extends Component {
                 'userinfo',
                 JSON.stringify({
                     username: this.state.username,
-                    password: this.state.password,
+                    password: this.state.password
                 })
             ).catch(error => console.log('Could not save user info', error));
         } else {
@@ -67,8 +67,8 @@ class Login extends Component {
                     containerStyle={styles.formInput}
                     leftIconContainerStyle={styles.formIcon}
                 />
-                <Checkbox
-                    title='Remeber Me'
+                <CheckBox
+                    title='Remember Me'
                     center
                     checked={this.state.remember}
                     onPress={() => this.setState({ remember: !this.state.remember })}
@@ -78,7 +78,7 @@ class Login extends Component {
                     <Button
                         onPress={() => this.handleLogin()}
                         title='Login'
-                        color='#5673DD'
+                        color='#5637DD'
                     />
                 </View>
             </View>
