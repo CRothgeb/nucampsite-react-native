@@ -29,45 +29,50 @@ class Favorites extends Component {
     render() {
         const { navigate } = this.props.navigation;
         const renderFavoriteItem = ({ item }) => {
-            return (
-                <SwipeRow rightOpenValue={-100} style={styles.swipeRow}>
-                    <View style={styles.deleteView}>
-                        <TouchableOpacity
-                            style={styles.deleteTouchable}
-                            onPress={() =>
-                                Alert.alert(
-                                    'Delete Favorite?',
-                                    'Are you sure you wish to delete the favorite campsite ' +
-                                    item.name +
-                                    '?',
-                                    [
-                                        {
-                                            text: 'Cancel',
-                                            onPress: () => console.log(item.name + 'Not Deleted'),
-                                            style: 'cancel'
-                                        },
-                                        {
-                                            text: 'OK',
-                                            onPress: () => this.props.deleteFavorite(item.id)
-                                        },
-                                    ],
-                                    { cancelable: false }
-                                )
-                            }
-                        >
-                            <Text style={styles.deleteText}>Delete</Text>
-                        </TouchableOpacity>
-                    </View>
+            if (item) {
+                return (
+                    <SwipeRow rightOpenValue={-100} style={styles.swipeRow}>
+                        <View style={styles.deleteView}>
+                            <TouchableOpacity
+                                style={styles.deleteTouchable}
+                                onPress={() =>
+                                    Alert.alert(
+                                        'Delete Favorite?',
+                                        'Are you sure you wish to delete the favorite campsite ' +
+                                        item.name +
+                                        '?',
+                                        [
+                                            {
+                                                text: 'Cancel',
+                                                onPress: () => console.log(item.name + 'Not Deleted'),
+                                                style: 'cancel'
+                                            },
+                                            {
+                                                text: 'OK',
+                                                onPress: () => this.props.deleteFavorite(item.id)
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    )
+                                }
+                            >
+                                <Text style={styles.deleteText}>Delete</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                    <View>
-                        <ListItem
-                            title={item.name}
-                            subtitle={item.description}
-                            leftAvatar={{ source: { uri: baseUrl + item.image } }}
-                            onPress={() => navigate('CampsiteInfo', { campsiteId: item.id })}
-                        />
-                    </View>
-                </SwipeRow>
+                        <View>
+                            <ListItem
+                                title={item.name}
+                                subtitle={item.description}
+                                leftAvatar={{ source: { uri: baseUrl + item.image } }}
+                                onPress={() => navigate('CampsiteInfo', { campsiteId: item.id })}
+                            />
+                        </View>
+                    </SwipeRow>
+                );
+            }
+            return (
+                <Text>You don't have any favorites yet.</Text>
             );
         };
 

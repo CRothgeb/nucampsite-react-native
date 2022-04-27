@@ -4,7 +4,7 @@ import { Card, Icon, Input, Rating } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
-import { postFavorite, postComment } from '../redux/ActionCreators';
+import { postFavorite, postComment, deleteFavorite } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
@@ -16,7 +16,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
     postFavorite,
-    postComment
+    postComment,
+    deleteFavorite
 };
 
 
@@ -27,6 +28,8 @@ function RenderCampsite(props) {
     const view = React.createRef();
 
     const recognizeDrag = ({ dx }) => (dx < -200) ? true : false;
+
+    const recognizeComment = ({ dx }) => (dx > 200) ? true : false;
 
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
@@ -49,11 +52,13 @@ function RenderCampsite(props) {
                         {
                             text: 'Ok',
                             onPress: () => props.favorite ?
-                                console.log('Already set as a favorite') : props.markFavorite()
+                                props.deleteFavorite() : props.markFavorite()
                         },
                     ],
                     { cancelable: false }
                 );
+            } else if (recognizeComment(gestureState)) {
+                props.onShowModal()
             }
             return true;
         }
@@ -161,6 +166,10 @@ class CampsiteInfo extends Component {
         this.props.postFavorite(campsiteId);
     }
 
+    unFavorite(campsiteId) {
+        this.props.deleteFavorite(campsiteId);
+    }
+
     static navigationOptions = {
         title: 'Campsite Information'
     }
@@ -174,6 +183,7 @@ class CampsiteInfo extends Component {
                 <RenderCampsite campsite={campsite}
                     favorite={this.props.favorites.includes(campsiteId)}
                     markFavorite={() => this.markFavorite(campsiteId)}
+                    unFavorite={() => this.unFavorite(campsiteId)}
                     onShowModal={() => this.toggleModal()}
                 />
                 <RenderComments comments={comments} />
