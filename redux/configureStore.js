@@ -12,7 +12,7 @@ import { favorites } from "./favorites";
 const config = {
     key: 'root',
     storage,
-    debug: true
+    debug: false
 }
 
 export const ConfigureStore = () => {
