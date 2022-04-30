@@ -4,6 +4,7 @@ import { Input, CheckBox, Button, Icon } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+import * as ImageManipulator from 'expo-image-manipulator';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { baseUrl } from '../shared/baseUrl';
 
@@ -89,7 +90,6 @@ class LoginTab extends Component {
                     <Button
                         onPress={() => this.handleLogin()}
                         title='Login'
-                        color='#5637DD'
                         icon={
                             <Icon
                                 name='sign-in'
@@ -131,6 +131,7 @@ class RegisterTab extends Component {
             username: '',
             password: '',
             firstname: '',
+            lastname: '',
             email: '',
             remember: false,
             imageUrl: baseUrl + 'images/logo.png'
@@ -150,18 +151,43 @@ class RegisterTab extends Component {
 
     getImageFromCamera = async () => {
         const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
-        const cameraRollPermission = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+        const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
-        if (cameraPermission.status === 'granted' && cameraRollPermission.staus === 'granted') {
+        if (cameraPermission.status === 'granted' && cameraRollPermission.status === 'granted') {
             const capturedImage = await ImagePicker.launchCameraAsync({
                 allowsEditing: true,
                 aspect: [1, 1]
             });
             if (!capturedImage.cancelled) {
                 console.log(capturedImage);
-                this.setState({ imageUrl: capturedImage.uri });
+                this.processImg(capturedImage.uri);
             }
         }
+    }
+
+    getImageFromGallery = async () => {
+        const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+        if (cameraRollPermission.status === 'granted') {
+            const capturedImage = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [1, 1]
+            });
+            if (!capturedImage.cancelled) {
+                console.log(capturedImage);
+                this.processImg(capturedImage.uri);
+            }
+        }
+    }
+
+    processImg = async (imgUri) => {
+        const processedImage = await ImageManipulator.manipulateAsync(
+            imgUri,
+            [{ resize: { width: 400 } }],
+            { format: ImageManipulator.SaveFormat.PNG }
+        );
+        console.log(processedImage);
+        this.setState({ imageUrl: processedImage.uri })
     }
 
     handleRegister() {
@@ -190,6 +216,10 @@ class RegisterTab extends Component {
                         <Button
                             title='Camera'
                             onPress={this.getImageFromCamera}
+                        />
+                        <Button
+                            title='Gallery'
+                            onPress={this.getImageFromGallery}
                         />
                     </View>
                     <Input
@@ -233,7 +263,7 @@ class RegisterTab extends Component {
                         leftIconContainerStyle={styles.formIcon}
                     />
                     <CheckBox
-                        title='Remeber Me'
+                        title='Remember Me'
                         center
                         checked={this.state.remember}
                         onPress={() => this.setState({ remember: !this.state.remember })}
@@ -279,20 +309,22 @@ const Login = createBottomTabNavigator(
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
-        margin: 20
+        margin: 10
     },
     formIcon: {
         marginRight: 10
     },
     formInput: {
-        padding: 10
+        padding: 8
     },
     formCheckbox: {
-        margin: 10,
+        margin: 8,
         backgroundColor: null
     },
     formButton: {
-        margin: 40
+        margin: 20,
+        marginRight: 40,
+        marginLeft: 40
     },
     imageContainer: {
         flex: 1,
